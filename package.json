@@ -1,0 +1,26 @@
+{
+  "name": "linsolutions-landing",
+  "version": "1.0.0",
+  "description": "LinSolutions - Landing Page com Agendamento Inteligente e Disparo de E-mails",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0",
+    "ics": "^3.8.1",
+    "nodemailer": "^6.10.0"
+  },
+  "keywords": [
+    "ai",
+    "automation",
+    "scheduling",
+    "landing-page"
+  ],
+  "author": "LinSolutions",
+  "license": "ISC"
+}
