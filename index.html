@@ -1974,6 +1974,14 @@
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
           </a>
+          <button type="button" id="downloadIcsBtn" class="btn btn-secondary-dark" style="padding: 0.85rem 1.5rem; font-size: 0.9rem;">
+            Baixar Convite (.ics / Outlook)
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
           <button class="btn btn-secondary-dark" onclick="closeLeadModal()" style="padding: 0.85rem 1.5rem; font-size: 0.9rem;">
             Concluir
           </button>
@@ -2146,7 +2154,14 @@
         const data = await res.json();
 
         if (res.ok) {
-          showBookingSuccess(name, email, date, time, data.appointment ? data.appointment.googleCalendarUrl : null);
+          showBookingSuccess(
+            name,
+            email,
+            date,
+            time,
+            data.appointment ? data.appointment.googleCalendarUrl : null,
+            data.appointment ? data.appointment.icsData : null
+          );
         } else {
           alert(data.error || 'Não foi possível concluir o agendamento.');
           submitBtn.disabled = false;
@@ -2155,11 +2170,11 @@
       } catch (err) {
         // Fallback Gracioso Local
         console.warn('Executando simulação de agendamento local:', err);
-        showBookingSuccess(name, email, date, time, null);
+        showBookingSuccess(name, email, date, time, null, null);
       }
     }
 
-    function showBookingSuccess(name, email, date, time, googleUrl) {
+    function showBookingSuccess(name, email, date, time, googleUrl, icsData) {
       const [y, m, d] = date.split('-');
       const formattedDate = `${d}/${m}/${y}`;
 
@@ -2178,6 +2193,52 @@
         const title = encodeURIComponent('Consultoria IA - LinSolutions & ' + name);
         const details = encodeURIComponent(`Diagnóstico de IA com a equipe LinSolutions.\nE-mail de contato: contato@linsolutionsbr.com.br\nLink da Sala: https://meet.google.com/lin-solu-ia`);
         gLink.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=Google+Meet`;
+      }
+
+      // Download do convite .ics (Outlook, Apple, GoDaddy Calendar)
+      const downloadBtn = document.getElementById('downloadIcsBtn');
+      if (downloadBtn) {
+        downloadBtn.onclick = () => {
+          let icsBlobContent = icsData;
+          if (!icsBlobContent) {
+            const [hour, minute] = time.split(':').map(Number);
+            const startIso = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), hour + 3, minute))
+              .toISOString().replace(/-|:|\.\d\d\d/g, "");
+            const endIso = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d), hour + 3, minute + 45))
+              .toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+            icsBlobContent = [
+              'BEGIN:VCALENDAR',
+              'VERSION:2.0',
+              'PRODID:LinSolutions/Calendar//PT',
+              'CALSCALE:GREGORIAN',
+              'METHOD:REQUEST',
+              'BEGIN:VEVENT',
+              `UID:LS-${Date.now()}@linsolutionsbr.com`,
+              `DTSTAMP:${new Date().toISOString().replace(/-|:|\.\d\d\d/g, "")}`,
+              `DTSTART:${startIso}`,
+              `DTEND:${endIso}`,
+              `SUMMARY:Consultoria IA: LinSolutions & ${name}`,
+              `DESCRIPTION:Diagnóstico de IA com a equipe LinSolutions.\\nLink: meet.google.com/lin-solu-ia`,
+              'LOCATION:Google Meet (meet.google.com/lin-solu-ia)',
+              'STATUS:CONFIRMED',
+              'ORGANIZER;CN=LinSolutions:MAILTO:contato@linsolutionsbr.com.br',
+              `ATTENDEE;RSVP=TRUE;CN=${name}:MAILTO:${email}`,
+              'END:VEVENT',
+              'END:VCALENDAR'
+            ].join('\r\n');
+          }
+
+          const blob = new Blob([icsBlobContent], { type: 'text/calendar;charset=utf-8' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'reuniao-linsolutions.ics';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        };
       }
     }
 

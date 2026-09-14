@@ -68,19 +68,24 @@ module.exports = async (req, res) => {
     const appointmentInterest = interest || 'Automação Geral com IA';
 
     // -------------------------------------------------------------------------
-    // Gerar convite de calendário (.ics)
+    // Gerar convite de calendário (.ics) com formato RFC 5545 REQUEST nativo
     // -------------------------------------------------------------------------
     const eventDetails = {
+      productId: 'LinSolutions/Calendar//PT',
+      method: 'REQUEST',
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY',
+      sequence: 0,
       start: [year, month, day, hour, minute],
       duration: { hours: 0, minutes: 45 },
       title: `Consultoria Estratégica IA: LinSolutions & ${name}`,
       description: `Reunião de Diagnóstico de Automação & Inteligência Artificial.\nCliente: ${name}\nE-mail: ${email}\nTelefone/WhatsApp: ${phone}\nInteresse: ${appointmentInterest}\n\nLink da Reunião (Google Meet): meet.google.com/lin-solu-ia`,
-      location: 'Google Meet (Online)',
+      location: 'Google Meet (meet.google.com/lin-solu-ia)',
       url: 'https://meet.google.com/lin-solu-ia',
       organizer: { name: 'LinSolutions IA', email: ADMIN_EMAIL },
       attendees: [
-        { name, email, rsvp: true },
-        { name: 'LinSolutions Equipe Técnica', email: ADMIN_EMAIL, rsvp: true }
+        { name, email, rsvp: true, role: 'REQ-PARTICIPANT' },
+        { name: 'LinSolutions Equipe Técnica', email: ADMIN_EMAIL, rsvp: true, role: 'CHAIR' }
       ]
     };
 
