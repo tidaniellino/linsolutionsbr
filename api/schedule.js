@@ -10,14 +10,6 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com';
 
 // Configuração do transporte SMTP (lazy init)
 function getTransporter() {
-  console.log('DIAGNOSTICO SMTP:', {
-    SMTP_HOST: process.env.SMTP_HOST || '(vazio)',
-    SMTP_PORT: process.env.SMTP_PORT || '(vazio)',
-    SMTP_USER: process.env.SMTP_USER || '(vazio)',
-    hasPass: !!process.env.SMTP_PASS,
-    passLength: process.env.SMTP_PASS ? process.env.SMTP_PASS.length : 0
-  });
-
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
