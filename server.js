@@ -67,50 +67,29 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
 }
 
 // ------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 // ROTAS DA API
 // ------------------------------------------------------------------------------
+const { getAvailability, getBusyPeriodsForDate, isSlotFree } = require('./api/_calendar');
 
 /**
  * GET /api/availability
  * Retorna a disponibilidade de horários para a data especificada (YYYY-MM-DD)
+ * integrando com o calendário da GoDaddy e agendamentos locais
  */
-app.get('/api/availability', (req, res) => {
+app.get('/api/availability', async (req, res) => {
   const { date } = req.query;
 
   if (!date) {
     return res.status(400).json({ error: 'O parâmetro date é obrigatório (formato YYYY-MM-DD).' });
   }
 
-  // Validar se é fim de semana (0 = Domingo, 6 = Sábado)
-  const [year, month, day] = date.split('-').map(Number);
-  const targetDate = new Date(year, month - 1, day);
-  const dayOfWeek = targetDate.getDay();
-
-  if (dayOfWeek === 0 || dayOfWeek === 6) {
-    return res.json({
-      date,
-      isBusinessDay: false,
-      message: 'Atendimento de consultoria disponível apenas de Segunda a Sexta-feira.',
-      slots: []
-    });
+  try {
+    const result = await getAvailability(date);
+    return res.json(result);
+  } catch (err) {
+    return res.status(400).json({ error: err.message || 'Erro ao processar disponibilidade.' });
   }
-
-  // Filtrar horários já ocupados nessa data
-  const bookedSlots = appointments
-    .filter(a => a.date === date)
-    .map(a => a.time);
-
-  const slots = STANDARD_SLOTS.map(time => ({
-    time,
-    available: !bookedSlots.includes(time)
-  }));
-
-  res.json({
-    date,
-    isBusinessDay: true,
-    timezone: 'America/Sao_Paulo (BRT)',
-    slots
-  });
 });
 
 /**
@@ -125,13 +104,15 @@ app.post('/api/schedule', async (req, res) => {
       return res.status(400).json({ error: 'Por favor, preencha todos os campos obrigatórios.' });
     }
 
-    // 1. Verificar se o horário na agenda já está ocupado
-    const isConflict = appointments.some(a => a.date === date && a.time === time);
-    if (isConflict) {
+    // 1. Verificar se o horário na agenda GoDaddy ou local já está ocupado
+    const busyPeriods = await getBusyPeriodsForDate(date);
+    const slotCheck = isSlotFree(date, time, busyPeriods);
+    if (!slotCheck.available) {
       return res.status(409).json({
-        error: `O horário das ${time} no dia ${date} acabou de ser preenchido. Por favor, selecione outro horário.`
+        error: slotCheck.reason ? `Não foi possível agendar: ${slotCheck.reason}.` : `O horário das ${time} no dia ${date} já está ocupado na agenda.`
       });
     }
+
 
     const appointmentId = 'LS-' + Date.now().toString(36).toUpperCase();
     const [year, month, day] = date.split('-').map(Number);

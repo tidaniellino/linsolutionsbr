@@ -1,14 +1,11 @@
 // =============================================================================
 // LinSolutions — Serverless Function: GET /api/availability
-// Retorna horários disponíveis para uma data (sem persistência server-side)
+// Retorna horários disponíveis com sincronização em tempo real do Calendário GoDaddy
 // =============================================================================
 
-const STANDARD_SLOTS = [
-  '09:00', '10:00', '11:00',
-  '14:00', '15:00', '16:00', '17:00'
-];
+const { getAvailability } = require('./_calendar');
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   // Permitir apenas GET
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -23,39 +20,13 @@ module.exports = (req, res) => {
     });
   }
 
-  // Validar formato da data
-  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateRegex.test(date)) {
+  try {
+    const result = await getAvailability(date);
+    return res.status(200).json(result);
+  } catch (err) {
     return res.status(400).json({
-      error: 'Formato de data inválido. Use YYYY-MM-DD.'
+      error: err.message || 'Erro ao processar disponibilidade.'
     });
   }
-
-  // Verificar se é fim de semana
-  const [year, month, day] = date.split('-').map(Number);
-  const targetDate = new Date(year, month - 1, day);
-  const dayOfWeek = targetDate.getDay();
-
-  if (dayOfWeek === 0 || dayOfWeek === 6) {
-    return res.json({
-      date,
-      isBusinessDay: false,
-      message: 'Atendimento de consultoria disponível apenas de Segunda a Sexta-feira.',
-      slots: []
-    });
-  }
-
-  // Sem persistência server-side: todos os horários disponíveis
-  // (Controle de conflitos será adicionado futuramente com Vercel KV)
-  const slots = STANDARD_SLOTS.map(time => ({
-    time,
-    available: true
-  }));
-
-  return res.json({
-    date,
-    isBusinessDay: true,
-    timezone: 'America/Sao_Paulo (BRT)',
-    slots
-  });
 };
+

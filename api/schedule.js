@@ -5,6 +5,7 @@
 
 const nodemailer = require('nodemailer');
 const ics = require('ics');
+const { getBusyPeriodsForDate, isSlotFree, saveLocalAppointment } = require('./_calendar');
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com';
 
@@ -61,11 +62,33 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'E-mail inválido.' });
     }
 
+    // Validação de concorrência com a agenda da GoDaddy
+    const busyPeriods = await getBusyPeriodsForDate(date);
+    const slotCheck = isSlotFree(date, time, busyPeriods);
+    if (!slotCheck.available) {
+      return res.status(409).json({
+        error: slotCheck.reason ? `Não foi possível agendar: ${slotCheck.reason}.` : 'Este horário já está ocupado na agenda. Por favor, escolha outro horário.'
+      });
+    }
+
     const appointmentId = 'LS-' + Date.now().toString(36).toUpperCase();
     const [year, month, day] = date.split('-').map(Number);
     const [hour, minute] = time.split(':').map(Number);
 
     const appointmentInterest = interest || 'Automação Geral com IA';
+
+    // Salvar o agendamento localmente (para bloqueio imediato)
+    saveLocalAppointment({
+      id: appointmentId,
+      name,
+      email,
+      phone,
+      date,
+      time,
+      interest: appointmentInterest,
+      createdAt: new Date().toISOString()
+    });
+
 
     // -------------------------------------------------------------------------
     // Gerar convite de calendário (.ics) com formato RFC 5545 REQUEST nativo
