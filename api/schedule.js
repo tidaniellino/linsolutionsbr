@@ -6,7 +6,7 @@
 const nodemailer = require('nodemailer');
 const ics = require('ics');
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com.br';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com';
 
 // Configuração do transporte SMTP (lazy init)
 function getTransporter() {
@@ -181,7 +181,7 @@ module.exports = async (req, res) => {
     } : null;
 
     if (transporter) {
-      // Envia para admin (contato@linsolutionsbr.com.br)
+      // Envia para admin (contato@linsolutionsbr.com)
       // Inclui .ics como convite nativo → aparece direto no calendário
       const adminMailOptions = {
         from: process.env.EMAIL_FROM || `LinSolutions <${ADMIN_EMAIL}>`,

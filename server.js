@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com.br';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'contato@linsolutionsbr.com';
 
 app.use(cors());
 app.use(express.json());
@@ -189,7 +189,7 @@ app.post('/api/schedule', async (req, res) => {
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Consultoria IA - LinSolutions & ' + name)}&dates=${startIso}/${endIso}&details=${encodeURIComponent('Diagnóstico com a equipe LinSolutions.\nLink: https://meet.google.com/lin-solu-ia')}&location=${encodeURIComponent('Google Meet')}`;
 
     // --------------------------------------------------------------------------
-    // 4. DISPARO DE E-MAIL 1: Para a LinSolutions (contato@linsolutionsbr.com.br)
+    // 4. DISPARO DE E-MAIL 1: Para a LinSolutions (contato@linsolutionsbr.com)
     // --------------------------------------------------------------------------
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; background-color: #0C0101; color: #FFF5F5; padding: 25px; border-radius: 8px;">

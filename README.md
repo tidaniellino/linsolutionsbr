@@ -39,7 +39,7 @@ Esta landing page foi arquitetada com foco em conversão, performance, estética
 - **Sistema de Agendamento de Consultorias Integrado:**
   - Validação de disponibilidade de horários.
   - Sincronização e geração de convites de reunião (`.ics` e Google Meet / Calendar).
-  - Disparo automático de e-mail de notificação para a equipe (`contato@linsolutionsbr.com.br`).
+  - Disparo automático de e-mail de notificação para a equipe (`contato@linsolutionsbr.com`).
   - Disparo automático de e-mail de confirmação para o lead.
 - **Copywriting Persuasivo:** Focado em tomadas de decisão C-Level, destacando problemas do mercado vs soluções definitivas com IA.
 - **Responsividade Total:** Adaptado perfeitamente para desktop, tablets e smartphones.
@@ -95,8 +95,8 @@ Esta landing page foi arquitetada com foco em conversão, performance, estética
 
 ```env
 PORT=3000
-ADMIN_EMAIL=contato@linsolutionsbr.com.br
-EMAIL_FROM="LinSolutions <contato@linsolutionsbr.com.br>"
+ADMIN_EMAIL=contato@linsolutionsbr.com
+EMAIL_FROM="LinSolutions <contato@linsolutionsbr.com>"
 
 # Servidor SMTP para disparo de e-mails
 SMTP_HOST=smtp.exemplo.com
@@ -110,8 +110,8 @@ SMTP_PASS=sua-senha-smtp
 
 ## 📬 Contato
 
-- **E-mail:** [contato@linsolutionsbr.com.br](mailto:contato@linsolutionsbr.com.br)
-- **Website:** [https://linsolutionsbr.com.br](https://linsolutionsbr.com.br)
+- **E-mail:** [contato@linsolutionsbr.com](mailto:contato@linsolutionsbr.com)
+- **Website:** [https://linsolutionsbr.com](https://linsolutionsbr.com)
 
 ---
 
