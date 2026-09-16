@@ -95,6 +95,8 @@
     html {
       scroll-behavior: smooth;
       font-size: 16px;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     body {
@@ -103,6 +105,8 @@
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
+      width: 100%;
+      position: relative;
       -webkit-font-smoothing: antialiased;
       transition: background-color 0.3s ease, color 0.3s ease;
     }
@@ -176,6 +180,7 @@
       white-space: nowrap;
       position: relative;
       overflow: hidden;
+      max-width: 100%;
     }
 
     .btn-primary {
@@ -1271,23 +1276,452 @@
       gap: 0.5rem;
     }
 
-    /* Responsividade */
+    /* ==========================================================================
+       MENU MOBILE DRAWER
+       ========================================================================== */
+    .mobile-nav-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(12, 1, 1, 0.72);
+      backdrop-filter: blur(8px);
+      z-index: 1500;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      overscroll-behavior: contain;
+    }
+
+    .mobile-nav-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-nav-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 85%;
+      max-width: 360px;
+      height: 100%;
+      height: 100dvh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      z-index: 1600;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      box-shadow: -15px 0 35px rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-nav-drawer.active {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .mobile-nav-close {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .mobile-nav-close:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .mobile-nav-links li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: transparent;
+      transition: var(--transition-smooth);
+    }
+
+    .mobile-nav-links li a:hover,
+    .mobile-nav-links li a:active {
+      background: var(--color-accent-subtle);
+      color: var(--color-accent);
+      transform: translateX(4px);
+    }
+
+    .mobile-nav-footer {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .mobile-contact-pill {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .mobile-contact-pill strong {
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    /* ==========================================================================
+       RESPONSIVIDADE AVANÇADA (Desktop, Tablet & Mobile)
+       ========================================================================== */
     @media (max-width: 992px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .hero-visual { order: -1; }
-      .comparison-grid { grid-template-columns: 1fr; }
-      .services-grid, .pillars-grid { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr 1fr; }
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .hero-content {
+        order: 1;
+      }
+      .hero-visual {
+        order: 2;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .comparison-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .services-grid, .pillars-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+      }
     }
 
     @media (max-width: 768px) {
-      .nav-links, .nav-cta-btn { display: none; }
-      .mobile-menu-toggle { display: block; }
-      .hero-metrics { grid-template-columns: 1fr; gap: 1rem; }
-      .form-grid-2 { grid-template-columns: 1fr; }
-      .slots-grid { grid-template-columns: repeat(3, 1fr); }
-      .footer-top { grid-template-columns: 1fr; gap: 2rem; }
-      .efficiency-card-float { position: relative; bottom: 0; right: 0; margin-top: 1rem; }
+      .site-header {
+        padding: 0.85rem 0;
+      }
+      .brand-logo-img {
+        height: 34px;
+        max-width: 175px;
+      }
+      .nav-links, .nav-cta-btn {
+        display: none !important;
+      }
+      .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: var(--radius-sm);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition-smooth);
+      }
+      .mobile-menu-toggle:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+      }
+
+      /* Hero Mobile */
+      .hero-section {
+        padding: 6.75rem 0 3.5rem;
+      }
+      .hero-section::before {
+        width: 320px;
+        height: 320px;
+        top: -10%;
+        right: -20%;
+      }
+      .hero-headline {
+        font-size: clamp(1.85rem, 6.2vw, 2.65rem);
+        line-height: 1.18;
+      }
+      .hero-subheadline {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      .hero-actions {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+        align-items: stretch;
+      }
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+        white-space: normal;
+        text-align: center;
+      }
+      .hero-metrics {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+        padding-top: 1.5rem;
+        margin-top: 0.75rem;
+      }
+      .metric-item {
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .metric-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      /* Card de Simulação Tech */
+      .tech-card-glass {
+        padding: 1.35rem 1rem;
+        border-radius: var(--radius-md);
+      }
+      .stream-bubble {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.8125rem;
+      }
+      .efficiency-card-float {
+        position: static;
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* Seções de Conteúdo */
+      .problem-solution-section,
+      .services-section,
+      .differentials-section {
+        padding: 4rem 0;
+      }
+      .section-header-center {
+        margin-bottom: 2.25rem;
+      }
+      .section-title {
+        font-size: clamp(1.6rem, 5.2vw, 2.25rem);
+        line-height: 1.22;
+      }
+      .section-subtitle {
+        font-size: 0.975rem;
+      }
+
+      .comparison-column {
+        padding: 1.75rem 1.25rem;
+        border-radius: var(--radius-md);
+      }
+      .pain-list, .solution-list {
+        gap: 1rem;
+      }
+      .pain-item, .solution-item {
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .service-card {
+        padding: 2rem 1.35rem;
+        border-radius: var(--radius-md);
+      }
+      .pillar-card {
+        padding: 2rem 1.35rem;
+        border-radius: var(--radius-md);
+      }
+
+      /* Seção CTA Final */
+      .cta-final-section {
+        padding: 4.5rem 0;
+      }
+      .cta-headline {
+        font-size: clamp(1.75rem, 5.8vw, 2.4rem);
+        line-height: 1.2;
+      }
+      .cta-subheadline {
+        font-size: 0.975rem;
+      }
+      .cta-action-wrap {
+        width: 100%;
+      }
+      .cta-action-wrap .btn {
+        width: 100%;
+        white-space: normal;
+        text-align: center;
+        padding: 1.15rem 1.25rem;
+        font-size: 1rem;
+        line-height: 1.35;
+      }
+      .guarantee-note {
+        font-size: 0.8rem;
+        text-align: center;
+        line-height: 1.45;
+      }
+
+      /* Rodapé */
+      .site-footer {
+        padding: 3.5rem 0 1.5rem;
+      }
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 2.25rem;
+        padding-bottom: 2.5rem;
+      }
+      .footer-brand p {
+        max-width: 100%;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      /* Modal de Agendamento */
+      .modal-backdrop {
+        padding: 0.75rem;
+      }
+      .modal-card {
+        padding: 1.6rem 1.15rem;
+        max-height: 92dvh;
+        border-radius: var(--radius-md);
+      }
+      .modal-close-btn {
+        top: 0.85rem;
+        right: 0.85rem;
+        padding: 0.5rem;
+      }
+      .modal-header {
+        margin-bottom: 1.25rem;
+        padding-right: 1.5rem;
+      }
+      .modal-header h3 {
+        font-size: 1.25rem;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .form-input, .form-select {
+        font-size: 1rem !important; /* Previne auto-zoom no iOS Safari */
+        padding: 0.8rem 0.9rem;
+      }
+      .slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.45rem;
+      }
+      .slot-pill {
+        padding: 0.65rem 0.2rem;
+        font-size: 0.825rem;
+      }
+      .booking-success-box .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1rem;
+      }
+      .site-header {
+        padding: 0.75rem 0;
+      }
+      .brand-logo-img {
+        height: 28px;
+        max-width: 145px;
+      }
+      .theme-toggle-btn {
+        width: 38px;
+        height: 38px;
+      }
+      .mobile-menu-toggle {
+        width: 38px;
+        height: 38px;
+      }
+      .header-actions {
+        gap: 0.5rem;
+      }
+      .hero-section {
+        padding: 6rem 0 3rem;
+      }
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.75rem;
+      }
+      .btn {
+        padding: 0.95rem 1.4rem;
+        font-size: 0.9375rem;
+        white-space: normal;
+        text-align: center;
+      }
+      .btn-lg {
+        padding: 1.05rem 1.4rem;
+        font-size: 0.975rem;
+      }
+      .metric-number {
+        font-size: 1.65rem;
+      }
+      .slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.35rem;
+      }
+      .slot-pill {
+        font-size: 0.8rem;
+        padding: 0.55rem 0.15rem;
+      }
+      .success-recap-card {
+        padding: 1rem 0.75rem;
+        font-size: 0.8125rem;
+      }
+      .success-alert-pill {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.65rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .brand-logo-img {
+        height: 26px;
+        max-width: 130px;
+      }
+      .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .hero-headline {
+        font-size: 1.7rem;
+      }
     }
   </style>
 </head>
@@ -1340,8 +1774,8 @@
           </svg>
         </button>
 
-        <button class="mobile-menu-toggle" aria-label="Abrir Formulário" onclick="openLeadModal('Menu Mobile')">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Abrir Menu de Navegação" aria-expanded="false" onclick="toggleMobileMenu()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -1350,6 +1784,76 @@
       </div>
     </div>
   </header>
+
+  <!-- ==========================================================================
+       MENU MOBILE DRAWER (Navegação Completa & Ação Rápida)
+       ========================================================================== -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileMenu()" aria-hidden="true"></div>
+  <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Menu de Navegação Mobile" aria-hidden="true">
+    <div class="mobile-nav-header">
+      <a href="#hero" class="brand-logo" onclick="closeMobileMenu()" aria-label="LinSolutions Início">
+        <img src="assets/logo-horizontal-dark.png" alt="LinSolutions Logo" class="brand-logo-img logo-dark">
+        <img src="assets/logo-horizontal-light.png" alt="LinSolutions Logo" class="brand-logo-img logo-light">
+      </a>
+      <button class="mobile-nav-close" aria-label="Fechar Menu" onclick="closeMobileMenu()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-links">
+      <li>
+        <a href="#problema-solucao" onclick="closeMobileMenu()">
+          <span>Diagnóstico</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="#solucoes" onclick="closeMobileMenu()">
+          <span>Soluções &amp; Serviços</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="#diferenciais" onclick="closeMobileMenu()">
+          <span>Por que a LinSolutions</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <a href="#contato" onclick="closeMobileMenu()">
+          <span>Fale Conosco</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </li>
+    </ul>
+
+    <div class="mobile-nav-footer">
+      <button class="btn btn-primary" onclick="closeMobileMenu(); openLeadModal('Drawer Mobile');" style="width: 100%;">
+        Agendar Reunião
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+
+      <div class="mobile-contact-pill">
+        <strong>LinSolutions</strong>
+        <span>contato@linsolutionsbr.com</span><br>
+        <span>Betim - MG • Atendimento em todo o Brasil</span>
+      </div>
+    </div>
+  </aside>
 
   <main>
     <!-- 1. Hero Section -->
@@ -2245,8 +2749,55 @@
       }
     }
 
+    // --------------------------------------------------------------------------
+    // 4. MENU MOBILE DRAWER
+    // --------------------------------------------------------------------------
+    function openMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const backdrop = document.getElementById('mobileNavBackdrop');
+      const toggleBtn = document.getElementById('mobileMenuBtn');
+
+      if (!drawer || !backdrop) return;
+      drawer.classList.add('active');
+      backdrop.classList.add('active');
+      drawer.setAttribute('aria-hidden', 'false');
+      backdrop.setAttribute('aria-hidden', 'false');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      const backdrop = document.getElementById('mobileNavBackdrop');
+      const toggleBtn = document.getElementById('mobileMenuBtn');
+
+      if (!drawer || !backdrop) return;
+      drawer.classList.remove('active');
+      backdrop.classList.remove('active');
+      drawer.setAttribute('aria-hidden', 'true');
+      backdrop.setAttribute('aria-hidden', 'true');
+      if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+
+      const leadModal = document.getElementById('leadModal');
+      if (!leadModal || !leadModal.classList.contains('active')) {
+        document.body.style.overflow = '';
+      }
+    }
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      if (drawer && drawer.classList.contains('active')) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    }
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLeadModal();
+      if (e.key === 'Escape') {
+        closeLeadModal();
+        closeMobileMenu();
+      }
     });
   </script>
 </body>
